@@ -14,6 +14,13 @@ function detect_cams {
   local lcs=""
   local rcs=""
   local all=""
+
+  echo "# Initializing environment"
+  echo "export CAM_PTP_LEFT=''"
+  echo "export CAM_GPHOTO2_LEFT=''"
+  echo "export CAM_PTP_RIGHT=''"
+  echo "export CAM_GPHOTO2_RIGHT=''"
+
   for i in $("$GPHOTO2" --auto-detect | sed -n 's/^.* \(usb:[0-9][0-9][0-9],[0-9][0-9][0-9]\)/\1/p') ; do
     is="$(echo "$i" | sed -n 's/^usb:[0-9][0-9][0-9],\([0-9][0-9][0-9]\)$/\1/p')"
     if test -z "$is" ; then
@@ -54,21 +61,17 @@ function detect_cams {
   fi
   if test -n "$lc" ; then
     echo "# Left camera"
-    echo "export CAM_PTP_LEFT=""$lcs"
-    echo "export CAM_GPHOTO2_LEFT=""$lc"
+    echo "CAM_PTP_LEFT=""$lcs"
+    echo "CAM_GPHOTO2_LEFT=""$lc"
   else
     echo "# Left camera not detected"
-    echo "export CAM_PTP_LEFT=''"
-    echo "export CAM_GPHOTO2_LEFT=''"
   fi
   if test -n "$rc" ; then
     echo "# Right camera"
-    echo "export CAM_PTP_LEFT=""$rcs"
-    echo "export CAM_GPHOTO2_LEFT=""$rc"
+    echo "CAM_PTP_RIGHT=""$rcs"
+    echo "CAM_GPHOTO2_RIGHT=""$rc"
   else
     echo "# Right camera not detected"
-    echo "export CAM_PTP_LEFT=''"
-    echo "export CAM_GPHOTO2_LEFT=''"
   fi
   return 0
 }
