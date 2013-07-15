@@ -411,7 +411,7 @@ function shoot_pages {
   fi
   echo "Downloaded $left_photo from left camera."
 
-  ( ( jpeg_rotate_inplace 270 "$left_photo" && && ln -f "$left_photo" last_left.jpg ) || ( echo "ERROR" ; echo "ERROR" ; echo "ERROR" ; echo "Error in rotating left page." ; echo "ERROR" ; echo "ERROR" ; echo "ERROR" ) ) &
+  ( ( jpeg_rotate_inplace 270 "$left_photo" && ln -f "$left_photo" last_left.jpg ) || ( echo "ERROR" ; echo "ERROR" ; echo "ERROR" ; echo "Error in rotating left page." ; echo "ERROR" ; echo "ERROR" ; echo "ERROR" ) ) &
   camera_delay_short
   
   PHOTOCOUNTER=$(expr $PHOTOCOUNTER + 1)
@@ -422,7 +422,7 @@ function shoot_pages {
     return 1
   fi
   echo "Downloaded $right_photo from right camera."
-  ( ( jpeg_rotate_inplace 90 "$right_photo" && && ln -f "$right_photo" last_right.jpg ) || ( echo "ERROR" ; echo "ERROR" ; echo "ERROR" ; echo "Error in rotating right page." ; echo "ERROR" ; echo "ERROR" ; echo "ERROR" ) ) &
+  ( ( jpeg_rotate_inplace 90 "$right_photo" && ln -f "$right_photo" last_right.jpg ) || ( echo "ERROR" ; echo "ERROR" ; echo "ERROR" ; echo "Error in rotating right page." ; echo "ERROR" ; echo "ERROR" ; echo "ERROR" ) ) &
   camera_delay_short
 
   return 0
