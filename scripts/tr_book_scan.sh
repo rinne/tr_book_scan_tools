@@ -337,7 +337,7 @@ while true ; do
     echo "Press pedal or b to photograph pages $page_no_plus1 and $page_no_plus2"
     echo "Press c to photograph cover pages $cover_no_plus1 and $cover_no_plus2"
   else
-    echo "Cameras are not initialized. Photo shooting us currently not possible."
+    echo "Cameras are not initialized. Photo shooting is currently not possible."
   fi
   if test $page_no -gt 1 ; then
     echo "Double press pedal or press r to return to last shot pages"
@@ -372,7 +372,9 @@ while true ; do
       page_no=0
     else
       echo "Photo archiving failed."
-      echo "You probably want to quit and solve the issue in scan dir manually."
+      echo "Solve the issue in scan dir manually."
+      echo "Abort."
+      exit
     fi
   elif test  $page_no -gt 1 -a "$k" = "bb" -o "$k" = "r" -o "$k" = "r" ; then
     echo "Rewind"
@@ -382,8 +384,18 @@ while true ; do
     page_no=$(expr $page_no - 1)
   elif test $cam_initialized = YES -a "$k" = "c" ; then
     echo "Shoot cover page."
-    cam_shoot "$(local_cover_file_name $cover_no_plus1)" "$(local_cover_file_name $cover_no_plus2)"
+    left_file="$(local_cover_file_name $cover_no_plus1)"
+    right_file="$(local_cover_file_name $cover_no_plus2)"
+    cam_shoot "$left_file" "$right_file"
     if test $? -eq 0 ; then
+      if test -e last_left.jpg ; then
+        mv -f last_left.jpg prev_left.jpg
+      fi
+      ln -f "$left_file" last_left.jpg
+      if test -e last_right.jpg ; then
+        mv -f last_right.jpg prev_right.jpg
+      fi
+      ln -f "$right_file" last_right.jpg
       cover_no=$(expr $cover_no + 2)
     else
       echo "-*- ERROR -*- ERROR -*- ERROR -*- ERROR -*- ERROR -*- ERROR -*-"
@@ -399,8 +411,18 @@ while true ; do
     fi
   elif test $cam_initialized = YES -a "$k" = "b" ; then
     echo "Shoot normal page."
-    cam_shoot "$(local_page_file_name $page_no_plus1)" "$(local_page_file_name $page_no_plus2)"
+    left_file="$(local_page_file_name $cover_no_plus1)"
+    right_file="$(local_page_file_name $cover_no_plus2)"
+    cam_shoot "$left_file" "$right_file"
     if test $? -eq 0 ; then
+      if test -e last_left.jpg ; then
+        mv -f last_left.jpg prev_left.jpg
+      fi
+      ln -f "$left_file" last_left.jpg
+      if test -e last_right.jpg ; then
+        mv -f last_right.jpg prev_right.jpg
+      fi
+      ln -f "$right_file" last_right.jpg
       page_no=$(expr $page_no + 2)
     else
       echo "-*- ERROR -*- ERROR -*- ERROR -*- ERROR -*- ERROR -*- ERROR -*-"
