@@ -411,8 +411,8 @@ while true ; do
     fi
   elif test $cam_initialized = YES -a "$k" = "b" ; then
     echo "Shoot normal page."
-    left_file="$(local_page_file_name $cover_no_plus1)"
-    right_file="$(local_page_file_name $cover_no_plus2)"
+    left_file="$(local_page_file_name $page_no_plus1)"
+    right_file="$(local_page_file_name $page_no_plus2)"
     cam_shoot "$left_file" "$right_file"
     if test $? -eq 0 ; then
       if test -e last_left.jpg ; then
