@@ -218,14 +218,11 @@ function cam_setup() {
   fi
 
   echo "Setting autofocus"
-  cam_chdk "$dev" "lua set_aflock(0); sleep(200); af=nil while (af==nil) do press("shoot_half"); sleep(800); release("shoot_half"); sleep(800); af=get_focus() end sleep(200); set_aflock(1); sleep(200)"
+  cam_chdk "$dev" "lua set_aflock(0)"
+  sleep 0.1
+  cam_luar "$dev" "$rvf_g" "press('shoot_half'); sleep(800); release('shoot_half'); set_aflock(1); sleep(800); return get_focus()"
   if test $? -ne 0 ; then
     echo "Autofocus setting fails."
-    return 1
-  fi
-  cam_luar "$dev" "$rvf_g" "return get_focus()"
-  if test $? -ne 0 ; then
-    echo "Autofocus value retrieval fails."
     return 1
   fi
   rv="$(cat "$rvf_g")"
@@ -234,7 +231,19 @@ function cam_setup() {
     echo "Error setting autofocus. Unexpected return type $rt when expecting int."
     return 1
   fi
-  echo "Autofocus returns value $rv"
+  echo "Autofocus setting returns value $rv"
+  cam_luar "$dev" "$rvf_g" "return get_focus()"
+  if test $? -ne 0 ; then
+    echo "Autofocus value retrieval fails."
+    return 1
+  fi
+  rv="$(cat "$rvf_g")"
+  rt="$(cat "$rvf_g"'.type')"
+  if test "$rt" != "int" ; then
+    echo "Error confirming autofocus value. Unexpected return type $rt when expecting int."
+    return 1
+  fi
+  echo "Autofocus check returns value $rv"
   if test "$rv" -lt 430 -o "$rv" -ge 480 ; then
     echo "Nominal autofocus is around 440-455 with this setup."
     echo "You might like to reinitialize the camera."
