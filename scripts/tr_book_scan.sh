@@ -28,7 +28,7 @@ function cam_initialized() {
   return 1
 }
 
-function cam_lua() {
+function cam_chdk() {
   if test $# -ne 2 ; then
     echo "Usage: $0 cam script"
     return 1
@@ -190,7 +190,7 @@ function cam_setup() {
   local rt
 
   echo "Setting camera mode"
-  cam_lua "$dev" "mode 1"
+  cam_chdk "$dev" "mode 1"
   if test $? -ne 0 ; then
     return 1
   fi
@@ -218,8 +218,7 @@ function cam_setup() {
   fi
 
   echo "Setting autofocus"
-  local dummy
-  cam_lua "$dev" "lua set_aflock(0); set_focus(700); sleep(100); press('shoot_half'); sleep(800); release('shoot_half'); sleep(800); set_aflock(1)"
+  cam_chdk "$dev" "lua set_aflock(0); sleep(200); af=nil while (af==nil) do press("shoot_half"); sleep(800); release("shoot_half"); sleep(800); af=get_focus() end sleep(200); set_aflock(1); sleep(200)"
   if test $? -ne 0 ; then
     echo "Autofocus setting fails."
     return 1
