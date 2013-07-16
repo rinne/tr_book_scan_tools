@@ -219,7 +219,7 @@ function cam_setup() {
 
   echo "Setting autofocus"
   local dummy
-  cam_lua "$dev" "lua set_aflock(0); set_focus(700); sleep(100); press('shoot_half'); sleep(800); release('shoot_half'); sleep(800)"
+  cam_lua "$dev" "lua set_aflock(0); set_focus(700); sleep(100); press('shoot_half'); sleep(800); release('shoot_half'); sleep(800); set_aflock(1)"
   if test $? -ne 0 ; then
     echo "Autofocus setting fails."
     return 1
